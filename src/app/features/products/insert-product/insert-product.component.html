@@ -1,0 +1,46 @@
+<div class="d-flex flex-column h-100">
+    <h2 class="mx-auto">Insert Products</h2>
+    <div class="col-md-12 border h-100 row border-top">
+        
+        <div class="col-md-6 d-flex flex-column py-4 border-right">
+            <div class="d-flex justify-content-between py-2">
+                <h6 class="my-auto">Select Category</h6>
+                <button class="btn btn-success" [disabled]="!selectedCategory">Add</button>
+            </div>
+            <ul class="list-group">
+                <ng-container *ngFor="let category of categories">
+                    <li class="list-group-item" [class.active]="category.name === selectedCategory?.name" (click)="loadCategoryProperties(category)">{{category.name}}</li>
+                </ng-container>
+            </ul>
+        </div>
+        
+        <div *ngIf="selectedCategory" class="col-md-6 py-4 d-flex flex-column">
+            <div class="d-flex py-2 justify-content-between">
+                <h6 class="mx-auto">Add New {{selectedCategory?.name}}</h6>
+                <button class="btn btn-success" (click)="onSubmit()">Submit</button>
+            </div>
+            <form *ngIf="categoryForm" [formGroup]="categoryForm">
+                <ng-container *ngFor="let categoryProperty of categoryProperties">
+                    <div class="col-md-12 row my-2">
+                        <div class="col-md-4 d-flex flex-column">
+                            <label [for]="categoryProperty.caption" class="mb-0">{{categoryProperty.caption}}</label>
+                            <small *ngIf="formSubmitted && categoryForm?.get(categoryProperty.caption)?.errors" class="text-danger">{{categoryProperty.validationMessage?.length ? categoryProperty.validationMessage : 'Required Field'}}</small>
+                        </div>
+                        <div>
+                            <ng-container [ngSwitch]="categoryProperty.type">
+                                <input *ngSwitchCase="'text'" [formControlName]="categoryProperty.caption" type="text" class="form-control">
+                                <input *ngSwitchCase="'int'"  [formControlName]="categoryProperty.caption"  type="number" class="form-control">
+                                <input *ngSwitchCase="'bool'" [formControlName]="categoryProperty.caption" [id]="categoryProperty.caption" type="checkbox" class="form-control">
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+            </form>
+            <div *ngIf="showToast" class="alert alert-success align-self-bottom" role="alert">
+                Added New {{selectedCategory?.name}} successfully!!!
+            </div>
+        </div>
+
+    </div>
+
+</div>
